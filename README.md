@@ -5,8 +5,8 @@ microphone-analyzer is a polymer element that enables microphone input data anal
 
 Dependencies:
 
-* (Polymer)[http://www.polymer-project.org/]
-* (Microphone)[https://github.com/srubin/microphone/]
+* [Polymer](http://www.polymer-project.org/)
+* [Microphone](https://github.com/srubin/microphone/)
 
 Usage:
 
