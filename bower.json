@@ -1,0 +1,20 @@
+{
+  "name": "meetup-dice-doodle",
+  "version": "1.0.0",
+  "authors": [
+    "Devin <ddcast@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~0.2.1",
+    "microphone": "git://github.com/srubin/microphone"
+  }
+}

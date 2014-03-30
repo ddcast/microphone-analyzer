@@ -1,0 +1,29 @@
+
+html {
+  font-size: 32px;
+  font-family: 'Trebuchet MS';
+  text-shadow: 0px 0px 10px black;
+}
+
+body {
+  background: #202020;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#content h2 {
+  color: grey;
+}
+
+#volume {
+  font-size: 3em;
+}
+
+#value {
+  color: #fff;
+}
