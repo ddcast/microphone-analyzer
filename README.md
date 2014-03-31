@@ -12,10 +12,10 @@ Usage:
 
 The `air` event is fired at the interaval specified by the unit option. `event.details` will contain the following properties:
 
-`data`
-`rms`
-`value`
-`audioRange`
+* `data`: audio stream data
+* `rms`: current root mean square
+* `value`: rms value
+* `audioRange`: descriptive range of current volume level (based on matched <audio-range>)
 
 Element attributes (based on [srubin/microphone](https://github.com/srubin/microphone/)):
 
