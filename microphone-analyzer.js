@@ -87,7 +87,7 @@
 
   var AudioRangePrototype = Object.create(HTMLElement.prototype);
 
-  document.registerElement('audio-range', {
+  window.AudioRange = document.registerElement('audio-range', {
     prototype: AudioRangePrototype
   });
 
@@ -127,7 +127,7 @@
     }, proxy(micInputHandler, this));
   };
 
-  document.registerElement('microphone-analyzer', {
+  window.MicrophoneAnalyzer = document.registerElement('microphone-analyzer', {
     prototype: MicrophoneAnalyzerPrototype
   });
 
