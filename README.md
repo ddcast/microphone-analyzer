@@ -15,7 +15,10 @@ The `air` event is fired at the interaval specified by the unit option. `event.d
 * `data`: audio stream data
 * `rms`: current root mean square
 * `value`: rms value
-* `audioRange`: descriptive range of current volume level (based on matched <audio-range>)
+* `audioRange`: descriptive range of current volume level (based on matched `<audio-range>`)
+  * `index`: index of matched `<audio-range>` element
+  * `innerHTML`: markup or text
+  * `value`: range array
 
 Element attributes (based on [srubin/microphone](https://github.com/srubin/microphone/)):
 
@@ -25,6 +28,7 @@ Element attributes (based on [srubin/microphone](https://github.com/srubin/micro
 
 Example:
 
+HTML:
 ```html
 <microphone-analyzer unit=".5" overlap=".25" channels="1">
   <audio-range start="0" end="1"><em>speak up!</em></audio-range>
@@ -35,6 +39,7 @@ Example:
 </microphone-analyzer>
 ```
 
+JavaScript:
 ```javascript
 var microphoneAnalyzer = document.querySelector('microphone-analyzer');
 
