@@ -10,7 +10,7 @@ Dependencies:
 
 Usage:
 
-The `air` event is fired at the interaval specified by the unit option. `event.details` will contain the following properties:
+The `air` event is fired at the interaval specified by the unit option. `event.detail` will contain the following properties:
 
 * `data`: audio stream data
 * `rms`: current root mean square
