@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Microphone-analyzer : " />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Microphone-analyzer</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ddcast/microphone-analyzer">View on GitHub</a>
+
+          <h1 id="project_title">Microphone-analyzer</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ddcast/microphone-analyzer/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ddcast/microphone-analyzer/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="microphone-analyzer" class="anchor" href="#microphone-analyzer"><span class="octicon octicon-link"></span></a>microphone-analyzer</h1>
+
+<p>microphone-analyzer is a polymer element that enables microphone input data analysis on your documents.</p>
+
+<p>Dependencies:</p>
+
+<ul>
+<li><a href="http://www.polymer-project.org/">Polymer</a></li>
+<li><a href="https://github.com/srubin/microphone/">Microphone</a></li>
+</ul><p>Usage:</p>
+
+<p>The <code>air</code> event is fired at the interaval specified by the unit option. <code>event.detail</code> will contain the following properties:</p>
+
+<ul>
+<li>
+<code>data</code>: audio stream data</li>
+<li>
+<code>rms</code>: current root mean square</li>
+<li>
+<code>value</code>: rms value</li>
+<li>
+<code>audioRange</code>: descriptive range of current volume level (based on matched <code>&lt;audio-range&gt;</code>)
+
+<ul>
+<li>
+<code>index</code>: index of matched <code>&lt;audio-range&gt;</code> element</li>
+<li>
+<code>innerHTML</code>: markup or text</li>
+<li>
+<code>value</code>: range array</li>
+</ul>
+</li>
+</ul><p>Element attributes (based on <a href="https://github.com/srubin/microphone/">srubin/microphone</a>):</p>
+
+<ul>
+<li>
+<code>unit</code>: the length (in seconds) of audio to return in each callback <em>(default: .5)</em>
+</li>
+<li>
+<code>overlap</code>: the amount of overlap in the audio data between successive callbacks (For example, overlap of .25 means the last 25% of the audio data from one callback will be the first 25% of the data in the next callback). <em>(default: .5. Must be between 0 and 1, inclusive)</em>
+</li>
+<li>
+<code>channels</code>: 1 (mono) or 2 (stereo) <em>(default: 1)</em>
+</li>
+</ul><p>Example:</p>
+
+<p>HTML:</p>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;microphone-analyzer</span> <span class="na">unit=</span><span class="s">".5"</span> <span class="na">overlap=</span><span class="s">".25"</span> <span class="na">channels=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"0"</span> <span class="na">end=</span><span class="s">"1"</span><span class="nt">&gt;&lt;em&gt;</span>speak up!<span class="nt">&lt;/em&gt;&lt;/audio-range&gt;</span>
+  <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"1.01"</span> <span class="na">end=</span><span class="s">"2"</span><span class="nt">&gt;</span>quiet<span class="nt">&lt;/audio-range&gt;</span>
+  <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"2.01"</span> <span class="na">end=</span><span class="s">"3"</span><span class="nt">&gt;</span>normal<span class="nt">&lt;/audio-range&gt;</span>
+  <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"3.01"</span> <span class="na">end=</span><span class="s">"4"</span><span class="nt">&gt;</span>loud<span class="nt">&lt;/audio-range&gt;</span>
+  <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"4.01"</span> <span class="na">end=</span><span class="s">"5"</span><span class="nt">&gt;</span>very loud<span class="nt">&lt;/audio-range&gt;</span>
+<span class="nt">&lt;/microphone-analyzer&gt;</span>
+</pre></div>
+
+<p>JavaScript:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">microphoneAnalyzer</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'microphone-analyzer'</span><span class="p">);</span>
+
+<span class="nx">microphoneAnalyzer</span><span class="p">.</span><span class="nx">valuefilter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">rms</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vol</span> <span class="o">=</span> <span class="nx">rms</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="nx">vol</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">microphoneAnalyzer</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'air'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Microphone-analyzer maintained by <a href="https://github.com/ddcast">ddcast</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
