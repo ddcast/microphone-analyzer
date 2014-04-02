@@ -8,6 +8,21 @@ Dependencies:
 * [Polymer](http://www.polymer-project.org/)
 * [Microphone](https://github.com/srubin/microphone/)
 
+Install
+=======
+
+Command line:
+
+`bower install ddcast/microphone-analyzer`
+
+Include in your document `<head>`:
+
+```HTML
+<script src="PATH_TO/bower_components/platform/platform.js"></script>
+<script src="PATH_TO/bower_components/microphone/microphone.js"></script>
+<script src="PATH_TO/bower_components/microphone-analyzer.js"></script>
+```
+
 Usage
 =====
 
