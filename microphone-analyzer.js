@@ -85,6 +85,12 @@
     this.dispatchEvent(evt);
   }
 
+  function setOptions() {
+    this.unit = getNumAttr(this, 'unit', .5);
+    this.overlap = getNumAttr(this, 'overlap', .5);
+    this.channels = getNumAttr(this, 'channels', 1);
+  }
+
   var AudioRangePrototype = Object.create(HTMLElement.prototype);
 
   window.AudioRange = document.registerElement('audio-range', {
@@ -103,9 +109,7 @@
     this.audioRange = {};
     this.lastRange = {};
 
-    this.unit = getNumAttr(this, 'unit', .5);
-    this.overlap = getNumAttr(this, 'overlap', .5);
-    this.channels = getNumAttr(this, 'channels', 1);
+    setOptions.call(this);
 
     this.style.display = 'none';
 
@@ -125,6 +129,20 @@
         overlap: this.overlap,
         channels: this.channels
     }, proxy(micInputHandler, this));
+  };
+
+  MicrophoneAnalyzerPrototype.detachedCallback = function detachedCallback() {
+    // disconnect media
+  };
+
+  MicrophoneAnalyzerPrototype.attachedCallback = function attachedCallback() {
+    // reconnect media
+  };
+
+  MicrophoneAnalyzerPrototype.attributeChangedCallback = function attributeChangedCallback() {
+    this.detachedCallback();
+    setOptions.call(this);
+    this.attachedCallback();
   };
 
   window.MicrophoneAnalyzer = document.registerElement('microphone-analyzer', {
