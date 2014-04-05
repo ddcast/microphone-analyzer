@@ -1,14 +1,30 @@
 microphone-analyzer
 ===================
 
-microphone-analyzer is a polymer element that enables microphone input data analysis on your documents.
+microphone-analyzer is a polymer element that enables document microphone input data analysis.
 
 Dependencies:
 
 * [Polymer](http://www.polymer-project.org/)
 * [Microphone](https://github.com/srubin/microphone/)
 
-Usage:
+Install
+=======
+
+Command line:
+
+`bower install ddcast/microphone-analyzer`
+
+Include in your document `<head>`:
+
+```HTML
+<script src="PATH_TO/bower_components/platform/platform.js"></script>
+<script src="PATH_TO/bower_components/microphone/microphone.js"></script>
+<script src="PATH_TO/bower_components/microphone-analyzer.js"></script>
+```
+
+Usage
+=====
 
 The `air` event is fired at the interaval specified by the unit option. `event.detail` will contain the following properties:
 
@@ -26,7 +42,8 @@ Element attributes (based on [srubin/microphone](https://github.com/srubin/micro
 * `overlap`: the amount of overlap in the audio data between successive callbacks (For example, overlap of .25 means the last 25% of the audio data from one callback will be the first 25% of the data in the next callback). *(default: .5. Must be between 0 and 1, inclusive)*
 * `channels`: 1 (mono) or 2 (stereo) *(default: 1)*
 
-Example:
+Example
+=======
 
 HTML:
 ```html
