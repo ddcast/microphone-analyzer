@@ -18,9 +18,11 @@ Command line:
 Include in your document `<head>`:
 
 ```HTML
-<script src="PATH_TO/bower_components/platform/platform.js"></script>
-<script src="PATH_TO/bower_components/microphone/microphone.js"></script>
-<script src="PATH_TO/bower_components/microphone-analyzer.js"></script>
+<script src="components/platform/platform.js"></script>
+<script src="components/microphone/microphone.js"></script>
+
+<link rel="import" href="components/polymer/polymer.html"> 
+<link rel="import" href="components/microphone-analyzer/microphone-analyzer.html"> 
 ```
 
 Usage
