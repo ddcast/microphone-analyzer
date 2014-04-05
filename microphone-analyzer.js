@@ -1,13 +1,13 @@
 /**
-* MicrophoneAnalyzerElement
-* A polymer element that enables microphone input data analysis on your documents.
-*
-* @method valuefilter
-* @param {Number} rms Computed rms value
+  * MicrophoneAnalyzerElement
+  * A polymer element that enables microphone input data analysis on your documents.
+  *
+  * @method valuefilter
+  * @param {Number} rms Computed rms value
 
-* @method createdCallback
-* Called when a <microphone-analyzer> element is created.
-*/
+  * @method createdCallback
+  * Called when a <microphone-analyzer> element is created.
+  */
 
 ;(function MicrophoneAnalyzerElement(Microphone) {
 
@@ -33,13 +33,13 @@
     throw err;
   }
 
+  function getNumAttr(element, name, defaultValue) {
+    return parseFloat(element.getAttribute(name) || defaultValue);
+  }
+
   // generates a handler that calls a function with a given ~context
   function proxy(fn, ctxValue) {
     return function proxyHandler() { fn.apply(ctxValue, arguments); }
-  }
-
-  function getNumAttr(element, name, defaultValue) {
-    return parseFloat(element.getAttribute(name) || defaultValue);
   }
 
   function withinRange(value, range) {
@@ -71,7 +71,7 @@
     var value = this.valuefilter(rms);
 
     // set current input descriptive range
-    this.ranges.forEach(proxy(rangeSetter(value), this));
+    this.value.forEach(proxy(rangeSetter(value), this));
 
     var evt = new CustomEvent('air', {
       detail: {
@@ -91,39 +91,41 @@
     this.channels = getNumAttr(this, 'channels', 1);
   }
 
-  var AudioRangePrototype = Object.create(HTMLElement.prototype);
+  function pushValue(arr, item){
+    var index = arr.indexOf(item);
 
-  window.AudioRange = document.registerElement('audio-range', {
-    prototype: AudioRangePrototype
-  });
+    if (index === -1) {
+      arr.push(item);
 
-  var MicrophoneAnalyzerPrototype = Object.create(HTMLElement.prototype);
+      return true;
+    }
 
-  MicrophoneAnalyzerPrototype.valuefilter = function valuefilter(rms) {
+    return false;
+  }
+
+  var MicrophoneAnalyzerLifecycle = { utils: {} };
+
+  // expose some helper methods
+  MicrophoneAnalyzerLifecycle.utils.proxy = proxy;
+  MicrophoneAnalyzerLifecycle.utils.getNumAttr = getNumAttr;
+
+  MicrophoneAnalyzerLifecycle.valuefilter = function valuefilter(rms) {
     return rms;
   };
 
-  MicrophoneAnalyzerPrototype.createdCallback = function createdCallback() {
-    var ranges = this.ranges = [];
+  MicrophoneAnalyzerLifecycle.updateValue = function updateValue(optionElement) {
+    pushValue(this.value, optionElement.value);
+  };
 
+  MicrophoneAnalyzerLifecycle.created = function createdCallback() {
     this.audioRange = {};
     this.lastRange = {};
+    this.value = [];
 
     setOptions.call(this);
+  };
 
-    this.style.display = 'none';
-
-    this.querySelectorAll('audio-range').array()
-      .forEach(function (element, index) {
-        element.value = {
-          index: index,
-          innerHTML: element.innerHTML,
-          value: [ getNumAttr(element, 'start'), getNumAttr(element, 'end') ]
-        };
-
-        ranges.push(element.value);
-      });
-
+  MicrophoneAnalyzerLifecycle.domReady = function domReady() {
     this.mic = new Microphone({
         unit: this.unit,
         overlap: this.overlap,
@@ -131,22 +133,18 @@
     }, proxy(micInputHandler, this));
   };
 
-  MicrophoneAnalyzerPrototype.detachedCallback = function detachedCallback() {
-    // disconnect media
+  MicrophoneAnalyzerLifecycle.detached = function detachedCallback() {
+    
   };
 
-  MicrophoneAnalyzerPrototype.attachedCallback = function attachedCallback() {
-    // reconnect media
+  MicrophoneAnalyzerLifecycle.attached = function attachedCallback() {
+
   };
 
-  MicrophoneAnalyzerPrototype.attributeChangedCallback = function attributeChangedCallback() {
-    this.detachedCallback();
+  MicrophoneAnalyzerLifecycle.attributeChanged = function attributeChangedCallback() {
     setOptions.call(this);
-    this.attachedCallback();
   };
 
-  window.MicrophoneAnalyzer = document.registerElement('microphone-analyzer', {
-    prototype: MicrophoneAnalyzerPrototype
-  });
+  Polymer('microphone-analyzer', MicrophoneAnalyzerLifecycle);
 
 } (window.Microphone));
