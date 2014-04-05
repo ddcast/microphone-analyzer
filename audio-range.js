@@ -5,11 +5,13 @@
 
 ;(function AudioRangeElement() {
 
-  var AudioRangeLifecycle = {};
+  var lifecycle = {};
 
-  AudioRangeLifecycle.setValue = function setValue() {
+  lifecycle.setValue = function setValue() {
+    var index = this.parentElement.children.array().indexOf(this);
+    
     this.value = {
-      index: this.parentElement.children.array().indexOf(this),
+      index: index,
       innerHTML: this.innerHTML,
       value: [
         this.utils.getNumAttr(this, 'start'),
@@ -20,7 +22,7 @@
     return this;
   };
 
-  AudioRangeLifecycle.created = function createdCallback() {  
+  lifecycle.created = function createdCallback() {  
     this.utils = this.parentElement.utils;
 
     this
@@ -29,10 +31,10 @@
       .updateValue(this);
   };
 
-  AudioRangeLifecycle.attributeChanged = function attributeChanged() {
+  lifecycle.attributeChanged = function attributeChanged() {
     this.setValue();
   };
 
-  Polymer('audio-range', AudioRangeLifecycle);
+  Polymer('audio-range', lifecycle);
 
 } ());

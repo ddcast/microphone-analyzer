@@ -49,11 +49,11 @@
   // generates a handler that sets the current range if it has changed
   function rangeSetter(v) {
     return function rangeSetterHandler(range, index) {
-      if (withinRange(v, range)) {
-        this.audioRange = range;
+      if (withinRange(v, range.value)) {
+        this.audioRange = range.value;
 
-        if (this.lastRange !== range) {
-          this.lastRange = range;
+        if (this.lastRange !== range.value) {
+          this.lastRange = range.value;
         }
       }
     };
@@ -71,7 +71,7 @@
     var value = this.valuefilter(rms);
 
     // set current input descriptive range
-    this.value.forEach(proxy(rangeSetter(value), this));
+    this.valueElements.forEach(proxy(rangeSetter(value), this));
 
     var evt = new CustomEvent('air', {
       detail: {
@@ -85,13 +85,7 @@
     this.dispatchEvent(evt);
   }
 
-  function setOptions() {
-    this.unit = getNumAttr(this, 'unit', .5);
-    this.overlap = getNumAttr(this, 'overlap', .5);
-    this.channels = getNumAttr(this, 'channels', 1);
-  }
-
-  function pushValue(arr, item){
+  function pushValue(arr, item) {
     var index = arr.indexOf(item);
 
     if (index === -1) {
@@ -103,48 +97,81 @@
     return false;
   }
 
-  var MicrophoneAnalyzerLifecycle = { utils: {} };
+  var lifecycle = { utils: {} };
 
   // expose some helper methods
-  MicrophoneAnalyzerLifecycle.utils.proxy = proxy;
-  MicrophoneAnalyzerLifecycle.utils.getNumAttr = getNumAttr;
+  lifecycle.utils.proxy = proxy;
+  lifecycle.utils.getNumAttr = getNumAttr;
 
-  MicrophoneAnalyzerLifecycle.valuefilter = function valuefilter(rms) {
+  lifecycle.options = function options() {
+    this.micOptions = this.micOptions || {};
+
+    this.micOptions.length = getNumAttr(this, 'length', .5);
+    this.micOptions.overlap = getNumAttr(this, 'overlap', .5);
+    this.micOptions.channels = getNumAttr(this, 'channels', 1);
+
+    return this.micOptions;
+  };
+
+  lifecycle.valuefilter = function valuefilter(rms) {
     return rms;
   };
 
-  MicrophoneAnalyzerLifecycle.updateValue = function updateValue(optionElement) {
-    pushValue(this.value, optionElement.value);
+  lifecycle.updateValue = function updateValue(optionElement) {
+    pushValue(this.valueElements, optionElement);
   };
 
-  MicrophoneAnalyzerLifecycle.created = function createdCallback() {
+  lifecycle.created = function createdCallback() {
     this.audioRange = {};
     this.lastRange = {};
-    this.value = [];
-
-    setOptions.call(this);
+    this.valueElements = [];
   };
 
-  MicrophoneAnalyzerLifecycle.domReady = function domReady() {
-    this.mic = new Microphone({
-        unit: this.unit,
-        overlap: this.overlap,
-        channels: this.channels
-    }, proxy(micInputHandler, this));
+  lifecycle.instantiateMicrophone = function instantiateMicrophone() {
+    this.mic = new Microphone(this.options(), proxy(micInputHandler, this));
+  }
+
+  lifecycle.killStream = function killStream() {
+    this.mic.mediaStreamSource && this.mic.mediaStreamSource
+      .disconnect();
+
+    window.microphoneProcessingNode && window.microphoneProcessingNode
+      window.microphoneProcessingNode.disconnect();
+  };
+  
+  lifecycle.startStream = function startStream() {
+    this.mic.mediaStreamSource && this.mic.mediaStreamSource
+      .connect(window.microphoneProcessingNode) &&
+
+    window.microphoneProcessingNode && window.microphoneProcessingNode
+      .connect(this.mic.audioContext.destination);
+  }
+
+  lifecycle.detached = function detachedCallback() {
+    if (!this.mic) return;
+
+    this.killStream();
   };
 
-  MicrophoneAnalyzerLifecycle.detached = function detachedCallback() {
+  lifecycle.attached = function attachedCallback() {
+    if (!this.mic) return;
+
+    this.startStream();
+  };
+
+  lifecycle.domReady = function domReady() {
+    this.instantiateMicrophone();
+  };
+
+  lifecycle.attributeChanged = function attributeChangedCallback() {
+    this.killStream();
     
+    delete this.mic;
+
+    this.instantiateMicrophone();
+    this.startStream();
   };
 
-  MicrophoneAnalyzerLifecycle.attached = function attachedCallback() {
-
-  };
-
-  MicrophoneAnalyzerLifecycle.attributeChanged = function attributeChangedCallback() {
-    setOptions.call(this);
-  };
-
-  Polymer('microphone-analyzer', MicrophoneAnalyzerLifecycle);
+  Polymer('microphone-analyzer', lifecycle);
 
 } (window.Microphone));
