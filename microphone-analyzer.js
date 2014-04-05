@@ -1,13 +1,13 @@
 /**
-  * MicrophoneAnalyzerElement
-  * A polymer element that enables microphone input data analysis on your documents.
-  *
-  * @method valuefilter
-  * @param {Number} rms Computed rms value
+* MicrophoneAnalyzerElement
+* A polymer element that enables microphone input data analysis on your documents.
+*
+* @method valuefilter
+* @param {Number} rms Computed rms value
 
-  * @method createdCallback
-  * Called when a <microphone-analyzer> element is created.
-  */
+* @method createdCallback
+* Called when a <microphone-analyzer> element is created.
+*/
 
 ;(function MicrophoneAnalyzerElement(Microphone) {
 
@@ -113,6 +113,14 @@
     return this.micOptions;
   };
 
+  lifecycle.bindMicOptions = function (options) {
+    this.mic.length = options.length;
+    this.mic.overlap = options.overlap;
+    this.mic.channels = options.channels;
+
+    return options;
+  };
+
   lifecycle.valuefilter = function valuefilter(rms) {
     return rms;
   };
@@ -128,11 +136,15 @@
   };
 
   lifecycle.instantiateMicrophone = function instantiateMicrophone() {
-    this.mic = new Microphone(this.options(), proxy(micInputHandler, this));
+    var options = this.options();
+
+    this.mic = new Microphone(options, proxy(micInputHandler, this));
+
+    this.bindMicOptions(options);
   }
 
   lifecycle.killStream = function killStream() {
-    this.mic.mediaStreamSource && this.mic.mediaStreamSource
+    this.mic && this.mic.mediaStreamSource && this.mic.mediaStreamSource
       .disconnect();
 
     window.microphoneProcessingNode && window.microphoneProcessingNode
@@ -140,7 +152,7 @@
   };
   
   lifecycle.startStream = function startStream() {
-    this.mic.mediaStreamSource && this.mic.mediaStreamSource
+    this.mic && this.mic.mediaStreamSource && this.mic.mediaStreamSource
       .connect(window.microphoneProcessingNode) &&
 
     window.microphoneProcessingNode && window.microphoneProcessingNode
@@ -148,14 +160,10 @@
   }
 
   lifecycle.detached = function detachedCallback() {
-    if (!this.mic) return;
-
     this.killStream();
   };
 
   lifecycle.attached = function attachedCallback() {
-    if (!this.mic) return;
-
     this.startStream();
   };
 
@@ -165,8 +173,6 @@
 
   lifecycle.attributeChanged = function attributeChangedCallback() {
     this.killStream();
-    
-    delete this.mic;
 
     this.instantiateMicrophone();
     this.startStream();

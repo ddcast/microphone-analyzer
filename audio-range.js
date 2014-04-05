@@ -1,7 +1,7 @@
 /**
-  * AudioRangeElement
-  * Provides value for use with MicrophoneAnalyzer elements.
-  */
+* AudioRangeElement
+* Provides value for use with MicrophoneAnalyzer elements.
+*/
 
 ;(function AudioRangeElement() {
 
