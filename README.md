@@ -6,7 +6,7 @@ microphone-analyzer is a polymer element that enables document microphone input 
 Dependencies:
 
 * [Polymer](http://www.polymer-project.org/)
-* [Microphone](https://github.com/srubin/microphone/)
+* [ddcast/microphone](https://github.com/ddcast/microphone/) (fork of [srubin/microphone](https://github.com/srubin/microphone/))
 
 Install
 =======
@@ -24,6 +24,13 @@ Include in your document `<head>`:
 <link rel="import" href="components/polymer/polymer.html"> 
 <link rel="import" href="components/microphone-analyzer/microphone-analyzer.html"> 
 ```
+
+Release notes
+=============
+* [beta-0.0.2](https://github.com/ddcast/microphone-analyzer/tree/release/beta-0.0.2)
+  * Improved element lifecycle management
+  * Included fork of [srubin/microphone](https://github.com/srubin/microphone/) that patches issue around multiple AudioContext instances.
+  * Added api methods `killStream` and `startStream` which respectively disconnects and connects media and processing node streams.
 
 Usage
 =====
