@@ -33,13 +33,13 @@
     throw err;
   }
 
+  function getNumAttr(element, name, defaultValue) {
+    return parseFloat(element.getAttribute(name) || defaultValue);
+  }
+
   // generates a handler that calls a function with a given ~context
   function proxy(fn, ctxValue) {
     return function proxyHandler() { fn.apply(ctxValue, arguments); }
-  }
-
-  function getNumAttr(element, name, defaultValue) {
-    return parseFloat(element.getAttribute(name) || defaultValue);
   }
 
   function withinRange(value, range) {
@@ -49,11 +49,11 @@
   // generates a handler that sets the current range if it has changed
   function rangeSetter(v) {
     return function rangeSetterHandler(range, index) {
-      if (withinRange(v, range)) {
-        this.audioRange = range;
+      if (withinRange(v, range.value)) {
+        this.audioRange = range.value;
 
-        if (this.lastRange !== range) {
-          this.lastRange = range;
+        if (this.lastRange !== range.value) {
+          this.lastRange = range.value;
         }
       }
     };
@@ -71,7 +71,7 @@
     var value = this.valuefilter(rms);
 
     // set current input descriptive range
-    this.ranges.forEach(proxy(rangeSetter(value), this));
+    this.valueElements.forEach(proxy(rangeSetter(value), this));
 
     var evt = new CustomEvent('air', {
       detail: {
@@ -85,50 +85,99 @@
     this.dispatchEvent(evt);
   }
 
-  var AudioRangePrototype = Object.create(HTMLElement.prototype);
+  function pushValue(arr, item) {
+    var index = arr.indexOf(item);
 
-  window.AudioRange = document.registerElement('audio-range', {
-    prototype: AudioRangePrototype
-  });
+    if (index === -1) {
+      arr.push(item);
 
-  var MicrophoneAnalyzerPrototype = Object.create(HTMLElement.prototype);
+      return true;
+    }
 
-  MicrophoneAnalyzerPrototype.valuefilter = function valuefilter(rms) {
+    return false;
+  }
+
+  var lifecycle = { utils: {} };
+
+  // expose some helper methods
+  lifecycle.utils.proxy = proxy;
+  lifecycle.utils.getNumAttr = getNumAttr;
+
+  lifecycle.options = function options() {
+    this.micOptions = this.micOptions || {};
+
+    this.micOptions.length = getNumAttr(this, 'length', .5);
+    this.micOptions.overlap = getNumAttr(this, 'overlap', .5);
+    this.micOptions.channels = getNumAttr(this, 'channels', 1);
+
+    return this.micOptions;
+  };
+
+  lifecycle.bindMicOptions = function (options) {
+    this.mic.length = options.length;
+    this.mic.overlap = options.overlap;
+    this.mic.channels = options.channels;
+
+    return options;
+  };
+
+  lifecycle.valuefilter = function valuefilter(rms) {
     return rms;
   };
 
-  MicrophoneAnalyzerPrototype.createdCallback = function createdCallback() {
-    var ranges = this.ranges = [];
-
-    this.audioRange = {};
-    this.lastRange = {};
-
-    this.unit = getNumAttr(this, 'unit', .5);
-    this.overlap = getNumAttr(this, 'overlap', .5);
-    this.channels = getNumAttr(this, 'channels', 1);
-
-    this.style.display = 'none';
-
-    this.querySelectorAll('audio-range').array()
-      .forEach(function (element, index) {
-        element.value = {
-          index: index,
-          innerHTML: element.innerHTML,
-          value: [ getNumAttr(element, 'start'), getNumAttr(element, 'end') ]
-        };
-
-        ranges.push(element.value);
-      });
-
-    this.mic = new Microphone({
-        unit: this.unit,
-        overlap: this.overlap,
-        channels: this.channels
-    }, proxy(micInputHandler, this));
+  lifecycle.updateValue = function updateValue(optionElement) {
+    pushValue(this.valueElements, optionElement);
   };
 
-  window.MicrophoneAnalyzer = document.registerElement('microphone-analyzer', {
-    prototype: MicrophoneAnalyzerPrototype
-  });
+  lifecycle.created = function createdCallback() {
+    this.audioRange = {};
+    this.lastRange = {};
+    this.valueElements = [];
+  };
+
+  lifecycle.instantiateMicrophone = function instantiateMicrophone() {
+    var options = this.options();
+
+    this.mic = new Microphone(options, proxy(micInputHandler, this));
+
+    this.bindMicOptions(options);
+  }
+
+  lifecycle.killStream = function killStream() {
+    this.mic && this.mic.mediaStreamSource && this.mic.mediaStreamSource
+      .disconnect();
+
+    window.microphoneProcessingNode && window.microphoneProcessingNode
+      window.microphoneProcessingNode.disconnect();
+  };
+  
+  lifecycle.startStream = function startStream() {
+    this.mic && this.mic.mediaStreamSource && this.mic.mediaStreamSource
+      .connect(window.microphoneProcessingNode) &&
+
+    window.microphoneProcessingNode && window.microphoneProcessingNode
+      .connect(this.mic.audioContext.destination);
+  }
+
+  lifecycle.detached = function detachedCallback() {
+    this.killStream();
+  };
+
+  lifecycle.attached = function attachedCallback() {
+    this.startStream();
+  };
+
+  lifecycle.domReady = function domReady() {
+    this.instantiateMicrophone();
+  };
+
+  lifecycle.attributeChanged = function attributeChangedCallback() {
+    this.killStream();
+
+    this.instantiateMicrophone();
+    this.startStream();
+  };
+
+  Polymer('microphone-analyzer', lifecycle);
 
 } (window.Microphone));

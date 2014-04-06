@@ -15,6 +15,6 @@
   ],
   "dependencies": {
     "polymer": "~0.2.1",
-    "microphone": "git://github.com/srubin/microphone"
+    "microphone": "git://github.com/ddcast/microphone"
   }
 }
