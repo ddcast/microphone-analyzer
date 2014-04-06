@@ -33,6 +33,20 @@
     throw err;
   }
 
+  var audioContext =  new (window.AudioContext || window.webkitAudioContext);
+
+  // patch audiocontext multiple instantiation issue in Microphone
+  Microphone.prototype.gotStream = function(stream) {
+    this.audioContext = audioContext;
+    this.bufLength = this.length * this.audioContext.sampleRate;
+    this.mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+    window.microphoneProcessingNode = this.createNode();
+
+    this.mediaStreamSource.connect(window.microphoneProcessingNode);
+    
+    return window.microphoneProcessingNode.connect(this.audioContext.destination);
+  };
+
   function getNumAttr(element, name, defaultValue) {
     return parseFloat(element.getAttribute(name) || defaultValue);
   }
