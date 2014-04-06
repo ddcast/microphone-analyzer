@@ -40,7 +40,8 @@
 
 <ul>
 <li><a href="http://www.polymer-project.org/">Polymer</a></li>
-<li><a href="https://github.com/srubin/microphone/">Microphone</a></li>
+<li>
+<a href="https://github.com/ddcast/microphone/">ddcast/microphone</a> (fork of <a href="https://github.com/srubin/microphone/">srubin/microphone</a>)</li>
 </ul><h1>
 <a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h1>
 
@@ -50,15 +51,30 @@
 
 <p>Include in your document <code>&lt;head&gt;</code>:</p>
 
-<div class="highlight highlight-HTML"><pre><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"PATH_TO/bower_components/platform/platform.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"PATH_TO/bower_components/microphone/microphone.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"PATH_TO/bower_components/microphone-analyzer.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<div class="highlight highlight-HTML"><pre><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"components/platform/platform.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"components/microphone/microphone.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"import"</span> <span class="na">href=</span><span class="s">"components/polymer/polymer.html"</span><span class="nt">&gt;</span> 
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"import"</span> <span class="na">href=</span><span class="s">"components/microphone-analyzer/microphone-analyzer.html"</span><span class="nt">&gt;</span> 
 </pre></div>
 
 <h1>
+<a name="release-notes" class="anchor" href="#release-notes"><span class="octicon octicon-link"></span></a>Release notes</h1>
+
+<ul>
+<li>
+<a href="https://github.com/ddcast/microphone-analyzer/tree/release/beta-0.0.2">beta-0.0.2</a>
+
+<ul>
+<li>Improved element lifecycle management</li>
+<li>Included fork of <a href="https://github.com/srubin/microphone/">srubin/microphone</a> that patches issue around multiple AudioContext instances.</li>
+<li>Added api methods <code>killStream</code> and <code>startStream</code> which respectively disconnects and connects media and processing node streams.</li>
+</ul>
+</li>
+</ul><h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
 
-<p>The <code>air</code> event is fired at the interaval specified by the unit option. <code>event.detail</code> will contain the following properties:</p>
+<p>The <code>air</code> event is fired at the interaval specified by the <code>length</code> option. <code>event.detail</code> will contain the following properties:</p>
 
 <ul>
 <li>
@@ -83,7 +99,7 @@
 
 <ul>
 <li>
-<code>unit</code>: the length (in seconds) of audio to return in each callback <em>(default: .5)</em>
+<code>length</code>: the length (in seconds) of audio to return in each callback <em>(default: .5)</em>
 </li>
 <li>
 <code>overlap</code>: the amount of overlap in the audio data between successive callbacks (For example, overlap of .25 means the last 25% of the audio data from one callback will be the first 25% of the data in the next callback). <em>(default: .5. Must be between 0 and 1, inclusive)</em>
@@ -96,7 +112,7 @@
 
 <p>HTML:</p>
 
-<div class="highlight highlight-html"><pre><span class="nt">&lt;microphone-analyzer</span> <span class="na">unit=</span><span class="s">".5"</span> <span class="na">overlap=</span><span class="s">".25"</span> <span class="na">channels=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+<div class="highlight highlight-html"><pre><span class="nt">&lt;microphone-analyzer</span> <span class="na">length=</span><span class="s">".5"</span> <span class="na">overlap=</span><span class="s">".25"</span> <span class="na">channels=</span><span class="s">"1"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"0"</span> <span class="na">end=</span><span class="s">"1"</span><span class="nt">&gt;&lt;em&gt;</span>speak up!<span class="nt">&lt;/em&gt;&lt;/audio-range&gt;</span>
   <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"1.01"</span> <span class="na">end=</span><span class="s">"2"</span><span class="nt">&gt;</span>quiet<span class="nt">&lt;/audio-range&gt;</span>
   <span class="nt">&lt;audio-range</span> <span class="na">start=</span><span class="s">"2.01"</span> <span class="na">end=</span><span class="s">"3"</span><span class="nt">&gt;</span>normal<span class="nt">&lt;/audio-range&gt;</span>
