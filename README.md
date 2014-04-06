@@ -28,7 +28,7 @@ Include in your document `<head>`:
 Usage
 =====
 
-The `air` event is fired at the interaval specified by the unit option. `event.detail` will contain the following properties:
+The `air` event is fired at the interaval specified by the `length` option. `event.detail` will contain the following properties:
 
 * `data`: audio stream data
 * `rms`: current root mean square
@@ -40,7 +40,7 @@ The `air` event is fired at the interaval specified by the unit option. `event.d
 
 Element attributes (based on [srubin/microphone](https://github.com/srubin/microphone/)):
 
-* `unit`: the length (in seconds) of audio to return in each callback *(default: .5)*
+* `length`: the length (in seconds) of audio to return in each callback *(default: .5)*
 * `overlap`: the amount of overlap in the audio data between successive callbacks (For example, overlap of .25 means the last 25% of the audio data from one callback will be the first 25% of the data in the next callback). *(default: .5. Must be between 0 and 1, inclusive)*
 * `channels`: 1 (mono) or 2 (stereo) *(default: 1)*
 
@@ -49,7 +49,7 @@ Example
 
 HTML:
 ```html
-<microphone-analyzer unit=".5" overlap=".25" channels="1">
+<microphone-analyzer length=".5" overlap=".25" channels="1">
   <audio-range start="0" end="1"><em>speak up!</em></audio-range>
   <audio-range start="1.01" end="2">quiet</audio-range>
   <audio-range start="2.01" end="3">normal</audio-range>
