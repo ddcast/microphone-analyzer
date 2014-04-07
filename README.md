@@ -28,7 +28,7 @@ Include in your document `<head>`:
 Release notes
 =============
 * [beta-0.0.3](https://github.com/ddcast/microphone-analyzer/tree/release/beta-0.0.3)
-  * startStream api method now reconnects stream at JavaScriptNode.
+  * `startStream` api method now reconnects stream at JavaScriptNode.
 * [beta-0.0.2](https://github.com/ddcast/microphone-analyzer/tree/release/beta-0.0.2)
   * Improved element lifecycle management.
   * Included fork of [srubin/microphone](https://github.com/srubin/microphone/) that patches issue around multiple AudioContext instances.
