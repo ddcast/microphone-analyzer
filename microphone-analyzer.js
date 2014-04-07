@@ -153,7 +153,7 @@
   
   lifecycle.startStream = function startStream() {
     this.mic && this.mic.mediaStreamSource && this.mic.mediaStreamSource
-      .connect(window.microphoneProcessingNode) &&
+      .connect(window.microphoneProcessingNode);
 
     window.microphoneProcessingNode && window.microphoneProcessingNode
       .connect(this.mic.audioContext.destination);
