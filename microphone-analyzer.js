@@ -15,7 +15,7 @@
   var err;
 
   if (!arguments[0]) {
-    err = new Error('Missing dependency: Microphone. Try `bower install srubin/microphone`');
+    err = new Error('Missing dependency: Microphone. Try `bower install ddcast/microphone`');
   }
 
   try {
